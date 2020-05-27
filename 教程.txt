@@ -1,0 +1,38 @@
+
+##### 需要 python环境  
+
+pip 文件夹  pip-20.1
+pip  安装教程  https://www.cnblogs.com/baiyuer/p/9606773.html
+
+
+1，安装 python
+
+2，切换 pip 源
+	win+r    输入   %HOMEPATH%       回车  在目录下  新建 pip 文件夹  在pip文件夹内新建 pip.ini  文件内容
+[global]
+timeout = 6000
+index-url = http://mirrors.aliyun.com/pypi/simple/
+trusted-host = mirrors.aliyun.com
+
+
+
+3，安装 解析库所需包， 可以先运行  python extract.py  看缺什么包就装什么包
+pip install pyperclip
+pip install pycryptodome
+pip install click
+pip install requests
+pip install selenium
+pip install prettytable
+pip install browsermob-proxy
+
+
+
+4，运行解析包  
+在命令行  进入   spiders项目根目录 
+运行  python extract.py
+如果出现 “正在监听剪贴板,复制视频连接即可自动下载。”  那就是成功了，去刷抖音吧
+
+
+5，编译 exe执行文件
+pip install pyinstaller
+pyinstaller -w -F  gui.py

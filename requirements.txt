@@ -1,0 +1,13 @@
+# extractor
+requests
+pycryptodome
+selenium
+
+# extract
+prettytable
+click
+
+# web
+flask
+flask-cors
+python-dotenv
