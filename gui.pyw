@@ -23,7 +23,7 @@ from extractor import (acfun, baidutieba, bilibili, changya, douyin, haokan,
                        open163, pearvideo, pipigaoxiao, pipix, qianqian,
                        qingshipin, qqmusic, quanminkge, qutoutiao, sing5,
                        sohuTV, ted, tudou, wechat_article_cover, weibo, weishi,
-                       xiaokaxiu, xinpianchang, zhihu_video, zuiyou_voice, tuchong)
+                       xiaokaxiu, xinpianchang, zhihu_video, zuiyou_voice, tuchong, mgtv, iqiyi)
 
 sep = os.sep
 
@@ -38,7 +38,9 @@ funcMap = {
     'ku6': ku6,
     'haokan': haokan,
     'music.163': music163,
-    'y.qq': qqmusic
+    'y.qq': qqmusic,
+    'mgtv': mgtv,
+    'iqiyi': iqiyi
 }
 
 if not os.path.exists('config'):
@@ -537,8 +539,18 @@ def get(func, url=None):
                 data = bilibili.get(url, savepath=path,
                                     func=func, sessData=sessData)
                 return {}
+            if key == 'mgtv':
+                data = mgtv.get(url, savepath=path,
+                                func=func)
+                return {}
+            if key == 'iqiyi':
+                data = iqiyi.get(url, savepath=path,
+                                 func=func)
+                return {}
             if key == 'douyin':
-                return douyin.get(url, func=func)
+                data = douyin.get(url, func=func)
+                data['pathname'] = path
+                return data
             else:
                 f = funcMap[key]
                 data = f.get(url)
@@ -606,7 +618,6 @@ def spider(func, url):
         'index': index,
         'total': length
     })
-
     for v in downs:
         for vv in v['data']:
             _url = vv
