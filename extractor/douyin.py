@@ -16,9 +16,9 @@ def get(url: str, savepath: str = 'download', func=None) -> dict:
     rep = requests.get(url,headers=headers, allow_redirects=False,verify=False)
     location = rep.headers['Location']
     if '/share/user/' in location:
-       return douyin_user.get(url)
+       return douyin_user.get(url,func=func)
     else:
-       return douyin_video.get(url)
+       return douyin_video.get(url,func=func)
 
     return {}
 

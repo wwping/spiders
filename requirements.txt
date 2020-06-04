@@ -2,7 +2,7 @@
 requests
 pycryptodome
 selenium
-
+browsermobproxy
 # extract
 prettytable
 click
@@ -11,3 +11,4 @@ click
 flask
 flask-cors
 python-dotenv
+

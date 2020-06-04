@@ -548,7 +548,9 @@ def get(func, url=None):
                                  func=func)
                 return {}
             if key == 'douyin':
-                return douyin.get(url, func=func)
+                data = douyin.get(url, func=func)
+                data['pathname'] = path
+                return data
             else:
                 f = funcMap[key]
                 data = f.get(url)
