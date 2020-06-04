@@ -2,6 +2,8 @@
 
 - 需要python环境
 - 某些视频下载需要 java环境 
+- 需要用到 selenium webdriver ,请将 chromedriver.exe 赋值到python安装根目录 , 如果不兼容请自行下载兼容版本
+- 下载地址 http://chromedriver.storage.googleapis.com/index.html
 
 ### 配置文件
 ```bash
@@ -47,9 +49,6 @@ UI模式下 在 clipsgui.txt 可以保存你的 等待连接url  最好每行一
 ### 单独未集成的几个
 | 文件 | 说明   |
 | ---------- | --------- |
-| douyin-user.py | 抓取抖音某用户所有视频 |
-|  | 需要用到 selenium webdriver <br> 请将 chromedriver.exe 赋值到python安装根目录 <br> 如果不兼容请自行下载兼容版本   |
-|  | 下载地址 http://chromedriver.storage.googleapis.com/index.html   |
 | testimage.py   | 片片     |
 | zzzttt.py   | 片片     |
 | pcav.py  | 省市区数据     |
