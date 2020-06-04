@@ -16,8 +16,12 @@
 
 
 ### 支持哪些
-- 抖音视频分享链接    https://v.douyin.com/w3G93b/
-- bilibili视频,番剧链接支持连P下载   https://www.bilibili.com/video/BV1mp4y1X7sr
+- 抖音视频分享链接，下载单个视频    https://v.douyin.com/w3G93b/
+- 抖音用户分享连接，下载用户所有视频
+
+- bilibili视频，下载所有P   https://www.bilibili.com/video/BV1mp4y1X7sr
+- bilibili番剧，下载所有P   
+
 - acfun视频链接  https://www.acfun.cn/v/ac15179107
 - 5sing音乐链接 http://5sing.kugou.com/fc/17457264.html
 - 酷狗音乐链接 https://www.kugou.com/song/#hash=86B0B6CCBE1341065931558886E4C07F&album_id=37236081
