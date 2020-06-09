@@ -304,7 +304,6 @@ class Bilibili:
                 data['data']['dash']['audio'][0]['baseUrl'], audioFilename, title + ' 音频部分')
 
             url = None
-
             for info in data['data']['dash']['video']:
                 if info['id'] == self.quality:
                     url = info['baseUrl']
