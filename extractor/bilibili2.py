@@ -314,7 +314,7 @@ class Bilibili:
                 url = data['data']['dash']['video'][0]['baseUrl']
 
             self.getFileByUrl(
-                info['baseUrl'], filename, title + ' 视频部分')
+                url, filename, title + ' 视频部分')
 
             self.combineAV(self.piecesDir+filename, self.piecesDir +
                            audioFilename, output, title)
