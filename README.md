@@ -1,9 +1,12 @@
+
 ### 环境依赖
 
 - 需要python环境
 - 某些视频下载需要 java环境 
 - 需要用到 selenium webdriver ,请将 chromedriver.exe 赋值到python安装根目录 , 如果不兼容请自行下载兼容版本
 - 下载地址 http://chromedriver.storage.googleapis.com/index.html
+- 需要用到  browsermob-proxy
+- 下载地址  https://github.com/lightbody/browsermob-proxy/releases
 
 ### 配置文件
 ```bash

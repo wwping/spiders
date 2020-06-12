@@ -23,7 +23,7 @@ from extractor import (acfun, baidutieba, bilibili, changya, douyin, haokan,
                        open163, pearvideo, pipigaoxiao, pipix, qianqian,
                        qingshipin, qqmusic, quanminkge, qutoutiao, sing5,
                        sohuTV, ted, tudou, wechat_article_cover, weibo, weishi,
-                       xiaokaxiu, xinpianchang, zhihu_video, zuiyou_voice, tuchong, mgtv, iqiyi)
+                       xiaokaxiu, xinpianchang, zhihu_video, zuiyou_voice, tuchong, mgtv, iqiyi, qqtv)
 
 sep = os.sep
 
@@ -40,7 +40,8 @@ funcMap = {
     'music.163': music163,
     'y.qq': qqmusic,
     'mgtv': mgtv,
-    'iqiyi': iqiyi
+    'iqiyi': iqiyi,
+    'v.qq': qqtv
 }
 
 if not os.path.exists('config'):
@@ -546,6 +547,10 @@ def get(func, url=None):
             if key == 'iqiyi':
                 data = iqiyi.get(url, savepath=path,
                                  func=func)
+                return {}
+            if key == 'v.qq':
+                data = qqtv.get(url, savepath=path,
+                                func=func)
                 return {}
             if key == 'douyin':
                 data = douyin.get(url, func=func)

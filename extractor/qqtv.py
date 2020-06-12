@@ -23,7 +23,7 @@ script_path = os.path.realpath(__file__)
 script_dir = os.path.dirname(script_path)
 
 
-class Iqiyi:
+class QQTV:
     def __init__(self, func=None):
 
         self.taskFile = ''
@@ -187,7 +187,8 @@ class Iqiyi:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36',
             'Host': url.split('/')[2]
         })
-        title = re.findall('name="irTitle" content="(.*)" />', rep.text)[0]
+        rep.encoding = 'utf-8'
+        title = re.findall('"title":"(.*)","leading_actor"', rep.text)[0]
 
         baseUrl = "http://jiexi.380k.com/?url=" + url
 
@@ -224,14 +225,34 @@ class Iqiyi:
             return
 
         m3u8 = None
+        mp4 = None
+        preurl = None
 
         for entry in result['log']['entries']:
             if '.m3u8' in entry['request']['url']:
                 m3u8 = entry['request']['url']
+            if '.mp4' in entry['request']['url']:
+                mp4 = entry['request']['url']
+            if '.ts' in entry['request']['url']:
+                arr = entry['request']['url'].split('/')
+                arr[-1] = ''
+                preurl = '/'.join(arr)
 
         server.stop()
         if driver:
             driver.quit()
+
+        if mp4:
+            self.total = 1
+            self.index = 0
+            self.callback('data', title='拉取数据成功')
+            self.callback('data', title='准备下载')
+
+            output = self.savepath + sep + title + '.mp4'
+            self.getFileByUrl(mp4, output, title)
+
+            self.callback('data')
+            return
 
         videos = []
 
@@ -243,7 +264,7 @@ class Iqiyi:
             })
             for filename in rep.text.split('\n'):
                 if '.ts?' in filename:
-                    videos.append(filename)
+                    videos.append(preurl + filename)
         except BaseException:
             self.printMsg("拉取数据失败", color="err")
             self.callback('data', title='拉取数据失败')
@@ -279,7 +300,7 @@ class Iqiyi:
 
 
 def get(url: str, savepath: str = 'download', func=None) -> dict:
-    mgtv = Iqiyi(func=func)
+    mgtv = QQTV(func=func)
 
     mgtv.taskFile = savepath + sep + 'taskfile.txt'
     mgtv.savepath = savepath
