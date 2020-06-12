@@ -35,6 +35,7 @@
 - QQ音乐 分享链接 https://c.y.qq.com/base/fcgi-bin/u?__=eawrb35
 - 芒果tv https://www.mgtv.com/b/337284/8174348.html?cxid=95kqkw8n6
 - 爱奇艺视频 https://www.iqiyi.com/v_19ry8g1ngc.html
+- 腾讯视频 https://v.qq.com/x/cover/r5trbf8xs5uwok1.html
 
 
 ### 怎么运行
