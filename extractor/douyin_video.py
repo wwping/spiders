@@ -2,8 +2,9 @@ import re
 
 import requests
 
+
 class DouyinVideo:
-    def __init__(self,url, func=None):
+    def __init__(self, url, func=None):
         self.name = url
         self.func = func
         self.url = url
@@ -20,6 +21,7 @@ class DouyinVideo:
                 'index': self.index,
                 'title': title,
             })
+
     def callbackMsg(self, msg, color=None):
         if self.func:
             self.func({
@@ -34,7 +36,7 @@ class DouyinVideo:
         else:
             print(msg)
 
-    def done(self,msg):
+    def done(self, msg):
         self.total = 1
         self.index = 1
         self.callback(msg)
@@ -56,7 +58,7 @@ class DouyinVideo:
         # get html text
         rep = requests.get(self.url, headers=headers, timeout=10)
         if not rep.ok:
-            self.printMsg("获取失败",color="err")
+            self.printMsg("获取失败", color="err")
             return data
 
         html_text = rep.text
@@ -65,34 +67,40 @@ class DouyinVideo:
         item_id = re.findall(r'itemId: "(\d+)"', html_text)
         dytk = re.findall(r'dytk: "(.*?)"', html_text)
         if not item_id or not dytk:
-            self.printMsg("获取失败",color="err")
+            self.printMsg("获取失败", color="err")
             return data
         item_id = item_id[0]
         dytk = dytk[0]
 
         # get video info
-        rep = requests.get(api.format(item_id=item_id, dytk=dytk), headers=headers, timeout=6)
+        rep = requests.get(api.format(
+            item_id=item_id, dytk=dytk), headers=headers, timeout=6)
         if not rep.ok or not rep.json()["status_code"] == 0:
-            self.printMsg("获取失败",color="err")
+            self.printMsg("获取失败", color="err")
             return data
         info = rep.json()["item_list"][0]
 
         data["author"] = info["author"]["nickname"]
         data["title"] = data["videoName"] = info["desc"]
         data["audioName"] = data["title"]
-        data["audios"] = [info["music"]["play_url"]["uri"]]
+
+        data["audios"] = [{'url': info["music"]
+                           ["play_url"]["uri"], 'name':data["title"]}]
         # data["imgs"] = [info["video"]["origin_cover"]["url_list"][0]]
 
         # get playwm_url -> play_url
-        play_url = info["video"]["play_addr"]["url_list"][0].replace('playwm', 'play')
+        play_url = info["video"]["play_addr"]["url_list"][0].replace(
+            'playwm', 'play')
 
-        rep = requests.get(play_url, headers=headers, allow_redirects=False, timeout=6)
+        rep = requests.get(play_url, headers=headers,
+                           allow_redirects=False, timeout=6)
         video_url = rep.headers.get('location', '')
-        data["videos"] = [video_url]
+        data["videos"] = [{'url': video_url, 'name': data["title"]}]
 
         return data
 
+
 def get(url: str,  func=None) -> dict:
-    douyin =  DouyinVideo(url,func)
+    douyin = DouyinVideo(url, func)
 
     return douyin.run()

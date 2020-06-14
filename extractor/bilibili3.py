@@ -123,38 +123,46 @@ class Bilibili:
 
         self.printMsg(f"\n【{title}】 正在下载")
         pindex = 0
+        if os.path.isfile(filename):
+            fsize = os.path.getsize(filename)
+            pindex += fsize
+            repsize = requests.get(url, headers=self.headers, stream=True)
+            total_size = int(repsize.headers['Content-Length'])
+
+            if abs(fsize-total_size) < 500:
+                self.printMsg('\n【' + filename +
+                              '】 '+' 文件已存在', color='warn')
+                self.index += 1
+                self.callback('data', title)
+                return True
+            else:
+                self.headers['Range'] = 'bytes='+str(fsize)+'-'
 
         with requests.get(url, headers=self.headers, stream=True) as rep:
             file_size = int(rep.headers['Content-Length'])
-            if rep.status_code != 200:
+            if not rep.status_code in [200, 206]:
                 self.printMsg(f"\n【{title}】 下载失败", color='err')
                 self.index += 1
                 self.callback('data')
                 return False
 
-            if os.path.isfile(filename):
-                fsize = os.path.getsize(filename)
-                if abs(fsize-file_size) < 500:
-                    self.printMsg('\n【' + filename +
-                                  '】 '+' 文件已存在', color='warn')
-                    self.index += 1
-                    self.callback('data', title)
-                    return True
-
             label = '{:.2f}MB'.format(file_size / (1024 * 1024))
             if self.func:
-                with open(filename, "wb") as f:
+                with open(filename, "ab") as f:
                     for chunk in rep.iter_content(chunk_size=1024):
                         if chunk:
                             f.write(chunk)
-                            pindex += 1027
+                            f.flush()
+                            pindex += 1024
                             self.callback2(file_size, pindex, title=title)
             else:
                 with click.progressbar(length=file_size, label=label) as progressbar:
-                    with open(filename, "wb") as f:
+                    progressbar.update(pindex)
+                    with open(filename, "ab") as f:
                         for chunk in rep.iter_content(chunk_size=1024):
                             if chunk:
                                 f.write(chunk)
+                                f.flush()
                                 progressbar.update(1024)
                                 pindex += 1027
                                 if pindex > file_size:

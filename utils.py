@@ -45,6 +45,11 @@ def printMsg(func, msg, color=None):
 
 
 def download(file_url, file_name=None, file_type=None, save_path="download", headers=None, func=None, pname=''):
+
+    if not file_url:
+        printMsg(func, "下载失败", color='err')
+        return False
+
     """
     :param file_url: 下载资源链接
     :param file_name: 保存文件名，默认为当前日期时间
@@ -74,21 +79,28 @@ def download(file_url, file_name=None, file_type=None, save_path="download", hea
     # 下载提示
     writeIndex = 0
     fullPath = f"{save_path}/{file_name}"
+
+    if os.path.isfile(fullPath):
+        fsize = os.path.getsize(fullPath)
+        writeIndex += fsize
+        repsize = requests.get(file_url, headers=headers, stream=True)
+        total_size = int(repsize.headers['Content-Length'])
+
+        if abs(fsize-total_size) < 500:
+            printMsg(func, fullPath+"文件已存在", color='warn')
+            return True
+        else:
+            headers['Range'] = 'bytes='+str(fsize)+'-'
+
     with requests.get(file_url, headers=headers, stream=True) as rep:
         file_size = int(rep.headers['Content-Length'])
-        if rep.status_code != 200:
+        if not rep.status_code in [200, 206]:
             printMsg(func, "下载失败", color='err')
             return False
 
-        if os.path.isfile(fullPath):
-            fsize = os.path.getsize(fullPath)
-            if abs(fsize-file_size) < 500:
-                printMsg(func, fullPath+"文件已存在", color='err')
-                return True
-
         label = '{:.2f}MB'.format(file_size / (1024 * 1024))
         if func:
-            with open(fullPath, "wb") as f:
+            with open(fullPath, "ab") as f:
                 for chunk in rep.iter_content(chunk_size=1024):
                     if chunk:
                         f.write(chunk)
@@ -101,11 +113,13 @@ def download(file_url, file_name=None, file_type=None, save_path="download", hea
                         })
         else:
             with click.progressbar(length=file_size, label=label) as progressbar:
-                with open(fullPath, "wb") as f:
+                progressbar.update(writeIndex)
+                with open(fullPath, "ab") as f:
                     for chunk in rep.iter_content(chunk_size=1024):
                         if chunk:
                             f.write(chunk)
                             progressbar.update(1024)
+                            writeIndex += 1024
 
         if os.path.exists(fullPath) and file_type == 'mp4':
             printMsg(func, f"{file_name} 开始生成封面", color='success')

@@ -124,17 +124,27 @@ class QQTV:
         self.printMsg(f"\n【{title}】 正在下载")
         pindex = 0
 
+        headers = {}
         if os.path.isfile(filename):
-            self.printMsg('【' + filename + '】 '+' 文件已存在', color='warn')
-            self.index += 1
-            self.callback('data', title)
-            return
+            fsize = os.path.getsize(filename)
+            pindex += fsize
+            repsize = requests.get(url, headers=headers, stream=True)
+            total_size = int(repsize.headers['Content-Length'])
+
+            if abs(fsize-total_size) < 500:
+                self.printMsg('\n【' + filename +
+                              '】 '+' 文件已存在', color='warn')
+                self.index += 1
+                self.callback('data', title)
+                return True
+            else:
+                headers['Range'] = 'bytes='+str(fsize)+'-'
 
         dindex = 0
 
         while dindex < 10:
             try:
-                with requests.get(url, headers={}) as rep:
+                with requests.get(url, headers=headers) as rep:
                     file_size = int(rep.headers['Content-Length'])
                     if rep.status_code != 200:
                         self.printMsg(f"\n【{title}】 下载失败", color='err')
@@ -142,18 +152,9 @@ class QQTV:
                         self.callback('data', title)
                         return False
 
-                    if os.path.isfile(filename):
-                        fsize = os.path.getsize(filename)
-                        if abs(fsize-file_size) < 500:
-                            self.printMsg('\n【' + filename +
-                                          '】 '+' 文件已存在', color='warn')
-                            self.index += 1
-                            self.callback('data', title)
-                            return True
-
                     label = '{:.2f}MB'.format(file_size / (1024 * 1024))
                     if self.func:
-                        with open(filename, "wb") as f:
+                        with open(filename, "ab") as f:
                             for chunk in rep.iter_content(chunk_size=1024):
                                 if chunk:
                                     f.write(chunk)
@@ -164,7 +165,8 @@ class QQTV:
                                         file_size, pindex, title=title)
                     else:
                         with click.progressbar(length=file_size, label=label) as progressbar:
-                            with open(filename, "wb") as f:
+                            progressbar.update(pindex)
+                            with open(filename, "ab") as f:
                                 for chunk in rep.iter_content(chunk_size=1024):
                                     if chunk:
                                         f.write(chunk)
