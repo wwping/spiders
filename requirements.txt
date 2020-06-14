@@ -1,14 +1,12 @@
 # extractor
+pyperclip
 requests
 pycryptodome
 selenium
-browsermobproxy
+browsermob-proxy
 # extract
 prettytable
 click
+bs4
 
-# web
-flask
-flask-cors
-python-dotenv
 
