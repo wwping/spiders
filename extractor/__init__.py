@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-30 14:49:11
-@LastEditTime: 2020-06-12 22:52:24
+@LastEditTime: 2020-06-14 12:37:00
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \spiders\extractor\__init__.py
@@ -47,5 +47,5 @@ __all__ = [
     "tuchong",
     "changba",
     "migu_music",
-    "momo", "meizi", "testimage", "zzzttt", "mgtv", "qqtv"
+    "momo", "meizi", "testimage", "zzzttt", "mgtv", "qqtv", "letv"
 ]
