@@ -128,7 +128,6 @@ dmypy.json
 .vim/coc-settings.json
 download/
 dist/
-config.json
 testimage.json
 clipsgui.txt
 clips.txt
