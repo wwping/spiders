@@ -6,6 +6,7 @@ from datetime import datetime
 import click
 import requests
 import subprocess
+import math
 
 
 def filter_name(name):
@@ -72,13 +73,19 @@ def download(file_url, file_name=None, file_type=None, save_path="download", hea
 
     # 下载提示
     writeIndex = 0
-    print(f"Downloading {file_name}")
     fullPath = f"{save_path}/{file_name}"
     with requests.get(file_url, headers=headers, stream=True) as rep:
         file_size = int(rep.headers['Content-Length'])
         if rep.status_code != 200:
             printMsg(func, "下载失败", color='err')
             return False
+
+        if os.path.isfile(fullPath):
+            fsize = os.path.getsize(fullPath)
+            if abs(fsize-file_size) < 500:
+                printMsg(func, fullPath+"文件已存在", color='err')
+                return True
+
         label = '{:.2f}MB'.format(file_size / (1024 * 1024))
         if func:
             with open(fullPath, "wb") as f:
@@ -99,13 +106,14 @@ def download(file_url, file_name=None, file_type=None, save_path="download", hea
                         if chunk:
                             f.write(chunk)
                             progressbar.update(1024)
-        
+
         if os.path.exists(fullPath) and file_type == 'mp4':
             printMsg(func, f"{file_name} 开始生成封面", color='success')
             arr = fullPath.split('.')
             arr[-1] = 'jpg'
             imgPath = '.'.join(arr)
-            child = subprocess.Popen(f'ffmpeg -loglevel error -i "{fullPath}" -f image2 -frames:v 1 "{imgPath}" -y', shell=True)
+            child = subprocess.Popen(
+                f'ffmpeg -loglevel error -i "{fullPath}" -f image2 -frames:v 1 "{imgPath}" -y', shell=True)
             child.wait()
             printMsg(func, f"{file_name} 生成封面成功", color='success')
 

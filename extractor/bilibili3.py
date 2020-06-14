@@ -7,6 +7,7 @@ import threading
 import shutil
 import subprocess
 import time
+import math
 sep = os.sep
 # 需要依赖ffmpeg
 # 有些资源会限速╭(╯^╰)╮
@@ -130,6 +131,16 @@ class Bilibili:
                 self.index += 1
                 self.callback('data')
                 return False
+
+            if os.path.isfile(filename):
+                fsize = os.path.getsize(filename)
+                if abs(fsize-file_size) < 500:
+                    self.printMsg('\n【' + filename +
+                                  '】 '+' 文件已存在', color='warn')
+                    self.index += 1
+                    self.callback('data', title)
+                    return True
+
             label = '{:.2f}MB'.format(file_size / (1024 * 1024))
             if self.func:
                 with open(filename, "wb") as f:
@@ -152,7 +163,6 @@ class Bilibili:
 
         self.printMsg(f"【{title}】 下载成功\n", color='success')
         self.printMsg(f"\n 休息一下", color='warn')
-        time.sleep(0.5)
         self.index += 1
         self.callback('data', title=title)
         return True

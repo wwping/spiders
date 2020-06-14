@@ -8,6 +8,7 @@ import shutil
 import click
 import subprocess
 import time
+import math
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver import Chrome
@@ -140,6 +141,16 @@ class LETV:
                         self.index += 1
                         self.callback('data', title)
                         return False
+
+                    if os.path.isfile(filename):
+                        fsize = os.path.getsize(filename)
+                        if abs(fsize-file_size) < 500:
+                            self.printMsg('\n【' + filename +
+                                          '】 '+' 文件已存在', color='warn')
+                            self.index += 1
+                            self.callback('data', title)
+                            return True
+
                     label = '{:.2f}MB'.format(file_size / (1024 * 1024))
                     if self.func:
                         with open(filename, "wb") as f:

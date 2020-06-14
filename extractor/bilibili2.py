@@ -8,6 +8,7 @@ import shutil
 import click
 import subprocess
 import time
+import math
 
 urllib3.disable_warnings()
 sep = os.sep
@@ -179,16 +180,29 @@ class Bilibili:
         self.printMsg(f"\n【{title}】 正在下载")
         pindex = 0
 
+        saveName = self.piecesDir + filename
+
         with requests.get(url, headers=self.download_headers, stream=True) as rep:
             file_size = int(rep.headers['Content-Length'])
+
             if rep.status_code != 200:
                 self.printMsg(f"\n【{title}】 下载失败", color='err')
                 self.index += 1
                 self.callback('data', title)
                 return False
+
+            if os.path.isfile(saveName):
+                fsize = os.path.getsize(saveName)
+                if abs(fsize-file_size) < 500:
+                    self.printMsg('\n【' + saveName +
+                                  '】 '+' 文件已存在', color='warn')
+                    self.index += 1
+                    self.callback('data', title)
+                    return True
+
             label = '{:.2f}MB'.format(file_size / (1024 * 1024))
             if self.func:
-                with open(self.piecesDir + filename, "wb") as f:
+                with open(saveName, "wb") as f:
                     for chunk in rep.iter_content(chunk_size=1024):
                         if chunk:
                             f.write(chunk)
@@ -198,7 +212,7 @@ class Bilibili:
                             self.callback2(file_size, pindex, title=title)
             else:
                 with click.progressbar(length=file_size, label=label) as progressbar:
-                    with open(self.piecesDir + filename, "wb") as f:
+                    with open(saveName, "wb") as f:
                         for chunk in rep.iter_content(chunk_size=1024):
                             if chunk:
                                 f.write(chunk)
@@ -211,7 +225,6 @@ class Bilibili:
         self.printMsg(f"【{title}】 下载成功", color='success')
 
         self.printMsg(f"\n 休息一下", color='warn')
-        time.sleep(1)
         self.index += 1
         self.callback('data', title=title)
         return True
