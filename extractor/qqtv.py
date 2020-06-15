@@ -144,7 +144,7 @@ class QQTV:
 
         while dindex < 10:
             try:
-                with requests.get(url, headers=headers) as rep:
+                with requests.get(url, headers=headers, stream=True) as rep:
                     file_size = int(rep.headers['Content-Length'])
                     if rep.status_code != 200:
                         self.printMsg(f"\n【{title}】 下载失败", color='err')

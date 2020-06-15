@@ -24,7 +24,6 @@ def get(url: str) -> dict:
                 data["videos"] = video
         else:
             data["msg"] = "失败"
-    print(data)
     return data
 
 

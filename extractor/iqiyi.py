@@ -119,13 +119,10 @@ class Iqiyi:
         child.wait()
         self.printMsg(f"\n【{title}】 视频合并完成....................")
 
-    def getFileByUrl(self, url, filename, title):
+    def getFileByUrl(self, url, filename, title, headers={}):
 
         self.printMsg(f"\n【{title}】 正在下载")
         pindex = 0
-
-        headers = {}
-
         if os.path.isfile(filename):
             fsize = os.path.getsize(filename)
             pindex += fsize
@@ -145,9 +142,9 @@ class Iqiyi:
 
         while dindex < 10:
             try:
-                with requests.get(url, headers=headers) as rep:
+                with requests.get(url, headers=headers, stream=True) as rep:
                     file_size = int(rep.headers['Content-Length'])
-                    if rep.status_code != 200:
+                    if not rep.status_code in [200, 206]:
                         self.printMsg(f"\n【{title}】 下载失败", color='err')
                         self.index += 1
                         self.callback('data', title)
@@ -240,14 +237,32 @@ class Iqiyi:
             return
 
         m3u8 = None
-
+        mp4 = None
         for entry in result['log']['entries']:
             if '.m3u8' in entry['request']['url']:
                 m3u8 = entry['request']['url']
+            if '.mp4' in entry['request']['url']:
+                mp4 = entry['request']['url']
 
         server.stop()
         if driver:
             driver.quit()
+
+        if mp4:
+            self.total = 1
+            self.index = 0
+            self.callback('data', title='拉取数据成功')
+            self.callback('data', title='准备下载')
+
+            output = self.savepath + sep + title + '.' + self.getVideoFormat()
+            self.getFileByUrl(mp4, output, title, headers={
+                'Host': mp4.split('/')[2],
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36',
+                'Referer': mp4
+            })
+
+            self.callback('data')
+            return
 
         videos = []
 
@@ -260,7 +275,8 @@ class Iqiyi:
             for filename in rep.text.split('\n'):
                 if '.ts?' in filename:
                     videos.append(filename)
-        except BaseException:
+        except BaseException as e:
+            print(e)
             self.printMsg("拉取数据失败", color="err")
             self.callback('data', title='拉取数据失败')
             return
