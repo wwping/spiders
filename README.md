@@ -41,11 +41,9 @@
 
 ### 怎么运行
 ```bash
-//命令行
-python extract.py
 //界面
-python gui.py
-//windows 不打开黑窗口直接运行
+python gui.py  或者运行 start.bat
+//windows 不打开黑窗口直接运行, 使用 browsermob-proxy 的时候创建代理，总会弹出一个黑乎乎的窗口
 gui.pyw
 ```
 
