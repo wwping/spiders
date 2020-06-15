@@ -206,6 +206,7 @@ class Iqiyi:
 
         server = None
         driver = None
+        proxy = None
         try:
             server = Server("browsermob-proxy\\bin\\browsermob-proxy.bat")
             server.start()
@@ -228,9 +229,12 @@ class Iqiyi:
 
             result = proxy.har
         except BaseException as e:
-            server.stop()
+            if server:
+                server.stop()
             if driver:
                 driver.quit()
+            if proxy:
+                proxy.close()
             print(e)
             self.printMsg("拉取数据失败", color="err")
             self.callback('data', title='拉取数据失败')
@@ -247,6 +251,8 @@ class Iqiyi:
         server.stop()
         if driver:
             driver.quit()
+        if proxy:
+            proxy.close()
 
         if mp4:
             self.total = 1

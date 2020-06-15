@@ -13,6 +13,7 @@ import json
 import signal
 import threading
 import tkinter
+import sys
 import tkinter.font as tf
 from tkinter.filedialog import askdirectory
 from tkinter import(Menu, Frame, LabelFrame, Message, messagebox,
@@ -700,12 +701,12 @@ t2.start()
 def closeWindow():
     ans = messagebox.askyesno(title='提示', message='是否确认关闭?')
     if ans:
+        sys.exit(0)
         top.destroy()
+
     else:
         return
 
 
 top.protocol('WM_DELETE_WINDOW', closeWindow)
-
-
 top.mainloop()
