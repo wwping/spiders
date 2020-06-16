@@ -8,5 +8,5 @@ browsermob-proxy
 prettytable
 click
 bs4
-
+pyppeteer
 
