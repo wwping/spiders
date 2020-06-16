@@ -66,3 +66,6 @@ UI模式下 在 clipsgui.txt 可以保存你的 等待连接url  最好每行一
 
 ### 仅用于代码交流，请勿用于违法犯罪活动
 
+### 如果你觉得有帮助
+- alipay
+![image](https://github.com/wwping/Qbcode.Configuration.Api/blob/master/alipay.png?raw=true)
