@@ -56,6 +56,7 @@ UI模式下 在 clipsgui.txt 可以保存你的 等待连接url  最好每行一
 ### 单独未集成的几个
 | 文件 | 说明   |
 | ---------- | --------- |
+| taobao.py  | 淘宝抢购     |
 | testimage.py   | 片片     |
 | zzzttt.py   | 片片     |
 | pcav.py  | 省市区数据     |
