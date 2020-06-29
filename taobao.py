@@ -49,7 +49,7 @@ async def main():
 
 async def buy(page):
     await page.goto('https://cart.taobao.com/cart.htm')
-
+    await asyncio.sleep(1)
     if await page.J("div#J_SelectAll1"):
         all = await page.J("div#J_SelectAll1")
         await all.click()
