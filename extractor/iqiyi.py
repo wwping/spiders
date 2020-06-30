@@ -297,6 +297,7 @@ class Iqiyi:
         tempPath = self.savepath + sep + title
         self.checkDir(tempPath)
         output = self.savepath + sep + title + '.' + self.getVideoFormat()
+        self.taskFile = self.savepath + sep + title + sep + 'taskfile.txt'
         for url in videos:
             filename = tempPath + sep + \
                 str(index) + '.' + self.getVideoFormat()
